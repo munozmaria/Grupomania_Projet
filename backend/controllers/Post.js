@@ -16,37 +16,13 @@ const postSchema = new mongoose.Schema({
 
 const Publication = mongoose.model('Publication', postSchema)
 
-/*
-function getPost(req, res) {
-    let postsConImgs = []
-    Publication.find()
-        .then((publications) => {
-            publications
-                .forEach((pub) => {
-                    // console.log(pub.userId)
-                    User.findOne({ _id: pub.userId }, { picture: 1 })
-                        .then((user) => {
-                        postsConImgs.push(user)
-                    })
-                })
-                .then((res) => res.status(200).json(postsConImgs))
-            .catch (() => res.status(500).json({ error: "couldn't get the users" }))
-        })
-        .catch((error) => res.status(500).send({msg: "la vida la ernura el amor !!"}))
-}
-*/
+
 
 function getPost(req, res) {
 	let postsConImgs = []
 	Publication.find().then((publications) => {
 		publications.forEach((publication) => {
-			/*   test por si quieres actualizar la imagen  
-            if (publication.comments.length > 0) {
-                publication.comments.forEach(
-                    (comment) => (comment.newComment = 'no me jodan mas !')
-                )
-            }
-            */
+			
 			postsConImgs.push(publication)
 		})
 		res.status(200).json(postsConImgs)
@@ -54,8 +30,7 @@ function getPost(req, res) {
 }
 
 function createPosts(req, res) {
-	console.log('necesito la foto')
-	console.log(req.files)
+
 	const date = Date.now()
 
 	const { userId, userNamePost, content } = req.body
@@ -87,14 +62,13 @@ function createPosts(req, res) {
 
 function createComment(req, res) {
 	const postId = req.params.id
-	console.log(req.body)
-	//const {userId, date, newComment} = req.body
+	
 
 	Publication.findById(postId, function (err, post) {
 		if (err) {
-			console.log(err)
+		
 		} else {
-			console.log('Result : ', post)
+	
 			post.comments.push(req.body)
 
 			post
@@ -114,28 +88,24 @@ function deleteComment(req, res) {
 	const idComment = req.params.idComment
 	const commentUserId = req.params.commentUserId
 	const date = req.params.date
-	// variable para dejar borrar o no
+	
 	let pass = false
 
-	// console.log(req.params)
-
-	// tomamos el id del usuario que hace la request y traemos sus datos de la base de datos
+	
 	User.findOne({ _id: requestUserId })
 		.then((user) => {
-			// checkear si es el dueño del post
-			// console.log(user)
-
+			
 			if (commentUserId == user._id) {
-				console.log('eres dueño del comment')
+				
 				pass = true
-				// checkear si el usuario es admin
+				
 			} else if (user.admin) {
 				pass = true
-				console.log('eres amin')
+			
 			} else {
-				res.status(403).send({ message: 'no tienes permisos para hacer esto ' })
+				res.status(403).send({ message: "vous n'êtes pas autorisé à supprimer ce commentaire" })
 			}
-			// borra el comment
+			
 
 			if (pass === true) {
 				Publication.findByIdAndUpdate(publicationId, {
@@ -143,7 +113,7 @@ function deleteComment(req, res) {
 				})
 
 					.then(() => {
-						res.status(201).send({ message: 'todo ok' })
+						res.status(201).send({ message: 'tout ok' })
 						return
 					})
 					.catch((error) => res.status(500).send(error))
@@ -164,28 +134,28 @@ function getOnlyOnePost(req, res) {
 }
 
 function deletePost(req, res) {
-	console.log('borrando')
+	
 	const requestUserId = req.params.id
 	const publication = req.body
-	console.log(req.body.publication._id)
+	
 	let pass = false
-	// dueño ?
+
 	User.findOne({ _id: requestUserId }).then((user) => {
 		if (requestUserId === publication.userId) {
-			console.log('eres el dueño ')
+			
 			pass = true
 		} else if (user.admin) {
-			console.log('eres admin ')
+		
 			pass = true
 		} else {
-			res.status(403).send({ message: 'no tienes permisos para hacer esto ' })
+			res.status(403).send({ message: "vous n'êtes pas autorisé à supprimer ce post" })
 		}
 		if (pass) {
 			Publication.findByIdAndDelete(req.body.publication._id)
 				.then((publication) => deleteImageLocal(publication))
 
 				.catch((error) =>
-					res.status(500).send({ message: ' no encontre nada !!!' })
+					res.status(500).send({ message: ' erreur' })
 				)
 		}
 	})
@@ -246,7 +216,7 @@ function modifyUpdateResponseClient(dataResponse, res) {
 }
 
 function imageUpdateProfil(req, res) {
-	console.log(req.file)
+	
 
 	const userId = req.body.userId
 
@@ -257,7 +227,6 @@ function imageUpdateProfil(req, res) {
 		if (err) {
 			res.send(err)
 		} else {
-			console.log(result)
 			res.send(result)
 		}
 	})
@@ -265,7 +234,7 @@ function imageUpdateProfil(req, res) {
 
 function likePost(req, res) {
 	const { like, userId } = req.body
-	console.log(like, userId)
+	
 
 	getOnePost(req, res)
 		.then((publication) => updateLike(publication, like, userId, res))
@@ -275,7 +244,7 @@ function likePost(req, res) {
 }
 
 function updateLike(publication, like, userId, res) {
-	console.log('holaaaa', publication)
+	
 
 	if (like && !publication.usersLiked.includes(userId)) {
 		publication.usersLiked.push(userId)

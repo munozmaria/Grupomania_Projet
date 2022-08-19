@@ -177,115 +177,111 @@
  
  
 <script>
-  import axios from "axios"
-  import CompLoading from "../components/CompLoading.vue"
-  import AlertComp from "../components/utils/AlertComp.vue"
-  export default {
-    components: { CompLoading, AlertComp },
-    name: "SignUp",
-    data() {
-      return {
-        userData: {
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          confPass: "",
-        },
-        msg: {
-          value: "",
-          class: "",
-        },
-        msgtext: "",
-        conditionsAccept: false,
-        errorValArray: [
-          "Veuillez entrer un prénom.",
-          "Veuillez entrer un nom.",
-          "Veuillez entrer une adresse email.",
-          "Veuillez entrer un mot de passe.",
-          "Veuillez confirmer le mot de passe.",
-          "Acceptez les conditions d'utilisation",
-          "Les mots de passe ne correspondent pas",
-          "Vous etes deja inscrit"
-        ],
-        errorNo: new Set(),
-        inscritError: false
+import axios from "axios";
+import CompLoading from "../components/CompLoading.vue";
+import AlertComp from "../components/utils/AlertComp.vue";
+export default {
+  components: { CompLoading, AlertComp },
+  name: "SignUp",
+  data() {
+    return {
+      userData: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confPass: "",
+      },
+      msg: {
+        value: "",
+        class: "",
+      },
+      msgtext: "",
+      conditionsAccept: false,
+      errorValArray: [
+        "Veuillez entrer un prénom.",
+        "Veuillez entrer un nom.",
+        "Veuillez entrer une adresse email.",
+        "Veuillez entrer un mot de passe.",
+        "Veuillez confirmer le mot de passe.",
+        "Acceptez les conditions d'utilisation",
+        "Les mots de passe ne correspondent pas",
+        "Vous etes deja inscrit",
+      ],
+      errorNo: new Set(),
+      inscritError: false,
+    };
+  },
+  methods: {
+    validateForm() {
+      // falta nombre
+      if (this.userData.firstName === "") {
+        this.errorNo.add(0);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[0];
+        // falta apellido
+      }
+      if (this.userData.lastName === "") {
+        this.errorNo.add(1);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[1];
+        // falta e-mail
+      }
+      if (this.userData.email === "") {
+        this.errorNo.add(2);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[2];
+        // password vacío
+      }
+      if (this.userData.password === "") {
+        this.errorNo.add(3);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[3];
+        // confirmer pass vacío
+      }
+      if (this.userData.confPass === "") {
+        this.errorNo.add(4);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[4];
+        // aceptas las condiciones de usuario
+      }
+      if (this.conditionsAccept === false) {
+        this.errorNo.add(5);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[5];
+      }
+      if (this.userData.password != this.userData.confPass) {
+        this.errorNo.add(6);
+        this.msg.class = this.msg.class = "alert-danger";
+        this.msg.value = this.errorValArray[6];
+      } else {
+        this.errorNo.delete(6);
+      }
+
+      if (this.errorNo.size == 0) {
+        this.signUp();
       }
     },
-    methods: {
-      validateForm() {
-        // falta nombre
-        if (this.userData.firstName === "") {
-          this.errorNo.add(0)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[0]
-          // falta apellido
-        }
-        if (this.userData.lastName === "") {
-          this.errorNo.add(1)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[1]
-          // falta e-mail
-        }
-        if (this.userData.email === "") {
-          this.errorNo.add(2)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[2]
-          // password vacío
-        }
-        if (this.userData.password === "") {
-          this.errorNo.add(3)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[3]
-          // confirmer pass vacío
-        }
-        if (this.userData.confPass === "") {
-          this.errorNo.add(4)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[4]
-          // aceptas las condiciones de usuario
-        }
-        if (this.conditionsAccept === false) {
-          this.errorNo.add(5)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[5]
-        }
-        if (this.userData.password != this.userData.confPass) {
-          this.errorNo.add(6)
-          this.msg.class = this.msg.class = "alert-danger"
-          this.msg.value = this.errorValArray[6]
-        } else {
-          this.errorNo.delete(6)
-        }
-
-        if (this.errorNo.size == 0) {
-          this.signUp()
-        }
-
-      },
-      signUp() {
-        axios
-          .post("http://localhost:3000/api/auth/signup", this.userData)
-          .then((res) => {
-            if (res.status == 201) {
-              localStorage.setItem("token", res.data.token)
-              this.$router.push("/login")
-            }
-          })
-          .catch((err) => {
-
-            if (err.message === "Request failed with status code 409") {
-              this.errorNo.add(7)
-              this.msg.class = this.msg.class = "alert-danger"
-              this.msg.value = this.errorValArray[7]
-              this.inscritError = true
-              console.log("error !!! ")
-
-            }
-          })
-      },
+    signUp() {
+      axios
+        .post("http://localhost:3000/api/auth/signup", this.userData)
+        .then((res) => {
+          if (res.status == 201) {
+            localStorage.setItem("token", res.data.token);
+            this.$router.push("/login");
+          }
+        })
+        .catch((err) => {
+          if (err.message === "Request failed with status code 409") {
+            this.errorNo.add(7);
+            this.msg.class = this.msg.class = "alert-danger";
+            this.msg.value = this.errorValArray[7];
+            this.inscritError = true;
+          }
+        });
     },
-  };
+  },
+};
 </script>
  
 <style scoped>

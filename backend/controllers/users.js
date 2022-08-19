@@ -11,7 +11,6 @@ async function createUser(req, res) {
 		const password = req.body.password
 		const hashedPassword = await hashPassword(password)
 
-		console.log(req.body)
 		const firstName = req.body.firstName
 		const lastName = req.body.lastName
 
@@ -32,16 +31,12 @@ async function createUser(req, res) {
 	}
 }
 
-//Function Hasher le Mot de Passe
 function hashPassword(password) {
 	const saltRounds = 10
 	return bcrypt.hash(password, saltRounds)
 }
 
-//Function logUser
 async function logUser(req, res) {
-	//console.log('loguser')
-	//console.log(req.body)
 	try {
 		const email = req.body.email
 		const password = req.body.password

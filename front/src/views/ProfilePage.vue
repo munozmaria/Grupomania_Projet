@@ -44,8 +44,9 @@ export default {
   },
   methods: {
     defaultImage() {
-        this.$store.state.user.picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
-      },
+      this.$store.state.user.picture =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
+    },
 
     imageUploadProfil(e) {
       const token = localStorage.getItem("token");
@@ -56,9 +57,9 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       };
-      //console.log(e.target.files);
+
       this.selectedPhotoProfil = e.target.files;
-      console.log(this.selectedPhotoProfil);
+
       let formData = new FormData();
       formData.append("userId", userId);
       //formData.append('image', this.selectedPhotoProfil)
@@ -76,7 +77,7 @@ export default {
 
         .then((resp) => {
           this.$store.dispatch("getUser", this.user);
-          e.target.value = ""
+          e.target.value = "";
         });
     },
   },
@@ -87,7 +88,12 @@ export default {
   <card-comp cardBody="" class="card card-profile mb-4">
     <div class="card-header" style="background-color: #ffd7d7"></div>
     <div class="card-body text-center">
-       <img class="card-profile-img" :src="$store.state.user.picture" @error="defaultImage()" alt="" />
+      <img
+        class="card-profile-img"
+        :src="$store.state.user.picture"
+        @error="defaultImage()"
+        alt=""
+      />
       <h3 class="mb-3">
         {{ `${$store.state.user.firstName} ${$store.state.user.lastName}` }}
       </h3>

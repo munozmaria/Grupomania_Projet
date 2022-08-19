@@ -3,10 +3,9 @@ const { User } = require("../mongo")
 
 function verifyUser(req, res, next) {
 	const header = req.headers.authorization
-	//console.log('este es el header')
-	//console.log(header)
+	
 	if (header == null)
-		return res.status(403).send({ message: "Que no hay puto header 👎" })
+		return res.status(403).send({ message: "There's no token 👎" })
 
 	const token = header.split(" ")[1]
 
@@ -26,16 +25,16 @@ function getUser(req, res) {
 		req.headers.authorization === undefined ||
 		req.headers.authorization === ""
 	) {
-		return res.status(403).send({ message: "no hay token 👎" })
+		return res.status(403).send({ message: "There's not token 👎" })
 	} else {
 		const token = req.headers.authorization.split(" ")[1]
-		//console.log(token)
+
 		if (token) {
 			jwt.verify(token, process.env.tokenPword, async (err, decoded) => {
 				if (err) {
 					return res.status(403).send({ messageee: "Token invalid 👎" + err })
 				} else {
-					//console.log(decoded)
+				
 					let user = await User.findOne({ email: decoded.email })
 					return res.status(200).send({ user })
 				}
@@ -49,16 +48,16 @@ async function getUserImg() {
 		req.headers.authorization === undefined ||
 		req.headers.authorization === ""
 	) {
-		return res.status(403).send({ message: "no hay token 👎" })
+		return res.status(403).send({ message: "There's no token 👎" })
 	} else {
 		const token = req.headers.authorization.split(" ")[1]
-		//console.log(token)
+	
 		if (token) {
 			jwt.verify(token, process.env.tokenPword, async (err, decoded) => {
 				if (err) {
 					return res.status(403).send({ messageee: "Token invalid 👎" + err })
 				} else {
-					//console.log(decoded)
+					
 					let user = await User.findOne({ email: decoded.email })
 					return res.status(200).send({ pic: user.picture })
 				}
@@ -68,7 +67,7 @@ async function getUserImg() {
 }
 
 async function getUserbyId(req, res) {
-	//console.log(req.body)
+	
 	const id = req.body.id
 
 	let user = await User.findById(id)

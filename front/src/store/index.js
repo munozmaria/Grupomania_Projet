@@ -1,5 +1,5 @@
-import { createStore } from 'vuex'
-import axios from 'axios'
+import { createStore } from "vuex"
+import axios from "axios"
 
 export default createStore({
 	state: {
@@ -21,7 +21,6 @@ export default createStore({
 		deletePost(state, idPost) {
 			console.log(state.posts)
 			let index = state.posts.findIndex((post) => {
-				//console.log(post._id)
 				return post._id == idPost
 			})
 
@@ -35,8 +34,6 @@ export default createStore({
 			let indexComment = selectedPost.comments.findIndex((comment) => {
 				return comment.idComment == idComment
 			})
-
-			// console.log(indexComment)
 
 			state.posts[indexPost].comments.splice(indexComment, 1)
 		},
@@ -58,36 +55,30 @@ export default createStore({
 	},
 	actions: {
 		getPosts(state) {
-			//verificar token
-			if (!localStorage.getItem('token')) {
-				console.log('logeate primero')
-				// verificar si el usuario existe en el store
+			if (!localStorage.getItem("token")) {
+				console.log("s'enregistrer d'abord")
 			} else if (state.user === {}) {
-				//verificar con el backend si el usuario esta ok
-				console.log('logeate primero')
+				console.log("s'enregistrer d'abord")
 			} else {
-				//console.log("ya puedes traer los posts")
-				const token = localStorage.getItem('token')
-				const userId = localStorage.getItem('userId')
+				const token = localStorage.getItem("token")
+				const userId = localStorage.getItem("userId")
 				const config = {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
 				}
-				axios.get('http://localhost:3000/api/post', config).then((res) => {
+				axios.get("http://localhost:3000/api/post", config).then((res) => {
 					console.log(res)
 					if (res.status == 200) {
-						console.log(res.data)
-						this.commit('setPosts', res.data)
+						this.commit("setPosts", res.data)
 					} else {
-						console.log('todo mal')
+						console.log("erreur")
 					}
 				})
 			}
 		},
 		deletePost(state, publication) {
-			console.log(publication)
-			const token = localStorage.getItem('token')
+			const token = localStorage.getItem("token")
 			const config = {
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -100,23 +91,23 @@ export default createStore({
 				.delete(`http://localhost:3000/api/post/${this.state.user._id}`, config)
 				.then((res) => console.log(res.data))
 				.catch(() => {
-					alert('no puedes')
+					alert("vous n'êtes pas autorisé à supprimer ce post")
 					window.location.reload()
 				})
-			state.commit('deletePost', publication._id)
+			state.commit("deletePost", publication._id)
 		},
 
 		addComment(context, { idPost, newComment }) {
 			// console.log(idPost, newComment)
-			const userId = localStorage.getItem('userId')
+			const userId = localStorage.getItem("userId")
 			const dateNow = Date.now()
 			const idComment = `${idPost}${dateNow}`
 			let index = this.state.posts.findIndex((post) => {
 				return post._id == idPost
 			})
-			//console.log(state.posts[index].comments)
+
 			if (index > -1) {
-				const token = localStorage.getItem('token')
+				const token = localStorage.getItem("token")
 				const config = {
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -135,10 +126,10 @@ export default createStore({
 						},
 						config
 					)
-					.then((res) => console.log(res, 'comment added ..'))
+					.then((res) => console.log(res, "comment added .."))
 					.catch((err) => console.log(err))
 			}
-			context.commit('addComment', {
+			context.commit("addComment", {
 				idPost,
 				newComment,
 				index,
@@ -152,15 +143,14 @@ export default createStore({
 			context,
 			{ dateComment, publicationId, idComment, commentUserId }
 		) {
-			// console.log(idUser, dateComment, publicationId, idComment)
-			const token = localStorage.getItem('token')
+			const token = localStorage.getItem("token")
 			const config = {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}
 
-			context.commit('updateComments', { publicationId, idComment })
+			context.commit("updateComments", { publicationId, idComment })
 
 			/*
 		
@@ -177,26 +167,23 @@ export default createStore({
 				)
 				.then((res) => console.log(res.data))
 				.catch(() => {
-					alert("tu n'es pas autorisé à faire ça")
+					alert("vous n'êtes pas autorisé à supprimer ce commentaire")
 					window.location.reload()
 				})
-
-			// this.state.posts[indexPost].comments.splice(indexComment, 1)
 		},
 
 		async getUser(state) {
 			await axios
-				.post('http://localhost:3000/api/auth/getuserid', {
-					id: localStorage.getItem('userId'),
+				.post("http://localhost:3000/api/auth/getuserid", {
+					id: localStorage.getItem("userId"),
 				})
 				.then((res) => {
 					if (res.status == 200) {
-						// console.log(res.data.user)
-						if (res.data.user.picture === '') {
+						if (res.data.user.picture === "") {
 							res.data.user.picture =
-								'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png'
+								"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
 						}
-						this.commit('setUser', res.data.user)
+						this.commit("setUser", res.data.user)
 					}
 				})
 				.catch((err) => {
@@ -207,11 +194,11 @@ export default createStore({
 		},
 
 		imageToUpload(imageUpload) {
-			const token = localStorage.getItem('token')
+			const token = localStorage.getItem("token")
 			const config = {
 				headers: {
 					Authorization: `Bearer ${token}`,
-					'Content-Type': 'multipart/form-data',
+					"Content-Type": "multipart/form-data",
 				},
 			}
 			axios.post(`http://localhost:3000/api/post/`, imageUpload, config)

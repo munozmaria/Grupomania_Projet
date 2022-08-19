@@ -1,104 +1,92 @@
 <script>
-  import axios from "axios"
-  export default {
-    name: "PublicationForm",
-    props: {
-      userPost: {
-        type: Object,
-        require: true,
-      }
+import axios from "axios";
+export default {
+  name: "PublicationForm",
+  props: {
+    userPost: {
+      type: Object,
+      require: true,
     },
+  },
 
-    data() {
-      return {
-        user: {
-          token: "",
-        },
-        newPost: {
-          content: "",
-        },
-        selectedImage: null,
-      }
-    },
-    created() {
-      this.$store.dispatch("getUser", this.user)
-
-
-    },
-
-    methods: {
-
-      defaultImage(){
-        this.$store.state.user.picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
+  data() {
+    return {
+      user: {
+        token: "",
       },
-      imageUpload(e) {
-        console.log("subo fotito")
-        this.selectedImage = e.target.files
+      newPost: {
+        content: "",
       },
+      selectedImage: null,
+    };
+  },
+  created() {
+    this.$store.dispatch("getUser", this.user);
+  },
 
-      createPost() {
-        if ([null, undefined, ""].includes(localStorage.getItem("token"))) {
-          this.$router.push("/login")
-        } else {
-          if (!this.selectedImage && this.newPost.content == "") {
-            return
+  methods: {
+    defaultImage() {
+      this.$store.state.user.picture =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
+    },
+    imageUpload(e) {
+      this.selectedImage = e.target.files;
+    },
 
-          }
-          //const formData = new FormData()
-          const token = localStorage.getItem("token")
-          const userId = localStorage.getItem("userId")
-          const config = {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-
-            },
-          }
-          const userNamePost = `${this.userPost.firstName} ${this.userPost.lastName}`
-
-          let formData = new FormData()
-
-          formData.append("userNamePost", userNamePost)
-          formData.append("userId", userId)
-          formData.append("content", this.newPost.content)
-
-          if (!this.selectedImage) {
-            this.selectedImage = {}
-          } else {
-
-            for (let i = 0; i < this.selectedImage.length; i++) {
-              formData.append('fileItems', this.selectedImage[i])
-
-
-            }
-          }
-
-          //console.log(this.selectedImage)
-
-
-          //https://masteringjs.io/tutorials/axios/post-headers
-          //axios post the first parameter is the URL, the 2nd parameter is the request body, and the 3rd parameter is the options
-          axios
-            .post("http://localhost:3000/api/post", formData, config)
-            .then((res) => {
-              console.log(res.status)
-              this.$store.commit("addPost", res.data.message)
-              this.newPost.content = ""
-              this.selectedImage = null
-            })
-            .catch((err) => {
-              console.log("err:", err)
-            })
+    createPost() {
+      if ([null, undefined, ""].includes(localStorage.getItem("token"))) {
+        this.$router.push("/login");
+      } else {
+        if (!this.selectedImage && this.newPost.content == "") {
+          return;
         }
-      },
+        //const formData = new FormData()
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        };
+        const userNamePost = `${this.userPost.firstName} ${this.userPost.lastName}`;
+
+        let formData = new FormData();
+
+        formData.append("userNamePost", userNamePost);
+        formData.append("userId", userId);
+        formData.append("content", this.newPost.content);
+
+        if (!this.selectedImage) {
+          this.selectedImage = {};
+        } else {
+          for (let i = 0; i < this.selectedImage.length; i++) {
+            formData.append("fileItems", this.selectedImage[i]);
+          }
+        }
+
+        //https://masteringjs.io/tutorials/axios/post-headers
+        //axios post the first parameter is the URL, the 2nd parameter is the request body, and the 3rd parameter is the options
+        axios
+          .post("http://localhost:3000/api/post", formData, config)
+          .then((res) => {
+            this.$store.commit("addPost", res.data.message);
+            this.newPost.content = "";
+            this.selectedImage = null;
+          })
+          .catch((err) => {
+            console.log("err:", err);
+          });
+      }
     },
-  };
+  },
+};
 </script>
 
 <template>
   <div class="image-comments mt-5 bg-white">
     <div v-if="$store.state.user" class="d-flex" id="boutonPublication">
-      <img :src="$store.state.user.picture" @error = "defaultImage()" alt="" />
+      <img :src="$store.state.user.picture" @error="defaultImage()" alt="" />
       <div
         class="d-flex flex-column flex-grow-1 justify-content-center me-3 ms-3"
       >
@@ -182,8 +170,6 @@ input {
   margin-bottom: 5px;
   margin-top: 5px;
 }
-
-
 
 .buttonOption .btn:hover {
   background: rgb(253, 1, 1);

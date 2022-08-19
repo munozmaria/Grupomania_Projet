@@ -1,92 +1,98 @@
 <script>
-  import axios from "axios"
+import axios from "axios";
 
-  import Avatar from './utils/Avatar.vue'
-  const {
-    getTimeAgo,
-    capitalizeFirstLetter,
-  } = require("../components/utils/timediffs")
+import Avatar from "./utils/Avatar.vue";
+const {
+  getTimeAgo,
+  capitalizeFirstLetter,
+} = require("../components/utils/timediffs");
 
-  export default {
-    name: "Comments",
-    components: { Avatar },
-    props: {
-      comment: {
-        type: Object,
-      },
-      publicationId: {
-        type: String,
-        required: true
-      },
-      commentUserId: {
-        type: String,
-        required: true
-      }
+export default {
+  name: "Comments",
+  components: { Avatar },
+  props: {
+    comment: {
+      type: Object,
+    },
+    publicationId: {
+      type: String,
+      required: true,
+    },
+    commentUserId: {
+      type: String,
+      required: true,
+    },
+  },
+
+  data() {
+    let userDataComment = {
+      firstName: "",
+      lastName: "",
+    };
+    this.findIdComment();
+    return {
+      getTimeAgo,
+      capitalizeFirstLetter,
+      userDataComment,
+    };
+  },
+  methods: {
+    defaultImage() {
+      this.userDataComment.picture =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
     },
 
-    data() {
-      let userDataComment = {
-        firstName: "",
-        lastName: ""
-      }
-      this.findIdComment()
-      return {
-        getTimeAgo,
-        capitalizeFirstLetter,
-        userDataComment,
-      }
+    deleteComment() {
+      const idUser = this.comment.userId;
+      const dateComment = this.comment.date;
+
+      this.$store.dispatch("deleteComment", {
+        idUser,
+        dateComment,
+        publicationId: this.publicationId,
+        idComment: this.comment.idComment,
+        commentUserId: this.commentUserId,
+      });
     },
-    methods: {
 
-      defaultImage() {
-        this.userDataComment.picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
-      },
-
-      deleteComment() {
-        const idUser = this.comment.userId
-        const dateComment = this.comment.date
-
-        this.$store.dispatch('deleteComment', { idUser, dateComment, publicationId: this.publicationId, idComment: this.comment.idComment, commentUserId: this.commentUserId })
-
-      },
-
-      findIdComment() {
-        axios
-          .post("http://localhost:3000/api/auth/getuserid", {
-            id: this.comment.userId,
-          })
-          .then((res) => {
-            if (res.status == 200) {
-              if (res.data.user.picture === "") {
-							res.data.user.picture =
-								"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
-						}
-              // console.log(res.data.user)
-              this.userDataComment = res.data.user
+    findIdComment() {
+      axios
+        .post("http://localhost:3000/api/auth/getuserid", {
+          id: this.comment.userId,
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            if (res.data.user.picture === "") {
+              res.data.user.picture =
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
             }
-          })
-          .catch((err) => {
-            if (err) {
-              console.log(err)
-            }
-          })
+
+            this.userDataComment = res.data.user;
+          }
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+    },
+  },
+  computed: {
+    isOwner() {
+      if (this.commentUserId === this.$store.state.user._id) {
+        return true;
+      } else {
+        return false;
       }
     },
-    computed: {
-      isOwner() {
-        if (this.commentUserId === this.$store.state.user._id) {
-          return true
-        } else {
-          return false
-        }
-      }
-    }
-  };
+  },
+};
 </script>
  
 <template>
   <div class="d-flex gap-1">
-    <avatar :scrImage="userDataComment.picture" @error="defaultImage()"> </avatar>
+    <avatar :scrImage="userDataComment.picture" @error="defaultImage()">
+    </avatar>
     <div class="d-flex flex-column ms-2 comment-text p-1 ps-3">
       <p>
         <strong>
