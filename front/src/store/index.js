@@ -87,12 +87,15 @@ export default createStore({
 					publication,
 				},
 			}
+			console.log('sssssssssssssssssssssssssssssssssssssssssssssss');
+			console.log(localStorage.getItem("userId"))
+			console.log(this.state.user._id);
 			axios
 				.delete(`http://localhost:3000/api/post/${this.state.user._id}`, config)
 				.then((res) => console.log(res.data))
 				.catch(() => {
 					alert("vous n'êtes pas autorisé à supprimer ce post")
-					window.location.reload()
+					//window.location.reload()
 				})
 			state.commit("deletePost", publication._id)
 		},

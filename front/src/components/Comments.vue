@@ -142,7 +142,7 @@ export default {
 .btn-delete {
   display: none;
   position: absolute;
-  right: 20px;
+  right: 34px;
   border-radius: 20%;
   width: 5%;
 

@@ -1,4 +1,5 @@
-<script>
+
+ <script>
 const {
   getTimeAgo,
   capitalizeFirstLetter,
@@ -62,6 +63,7 @@ export default {
         })
         .then((res) => {
           if (res.status == 200) {
+            // console.log(res.data.user)
             if (res.data.user.picture === "") {
               res.data.user.picture =
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
@@ -75,6 +77,39 @@ export default {
           }
         });
     },
+    saveNewText() {
+      if ([null, undefined, ""].includes(localStorage.getItem("token"))) {
+        this.$router.push("/login");
+      } else {
+        if (this.newText == "") {
+          return;
+        }
+        //const formData = new FormData()
+        const token = localStorage.getItem("token");
+   
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        axios
+          .put(`http://localhost:3000/api/post/${this.publication._id}/${this.newText}`, {}, config)
+          .then((res) => {
+            console.log("holaaaa", res);
+            this.publication.content = res.data.content
+            this.modifyText = !this.modifyText
+           
+          })
+          .catch((err) => {
+            console.log("err:", err);
+          });
+      }
+    },
+    resetText(){
+      this.newText = this.publication.content
+      this.modifyText = !this.modifyText
+    }
   },
 
   components: { Comments, Avatar, Carousel },
@@ -86,6 +121,7 @@ export default {
     const currentUser = localStorage.getItem("userId");
     let iLikeIt = this.publication.usersLiked.includes(currentUser);
     return {
+      modifyText: false,
       getTimeAgo,
       capitalizeFirstLetter,
       currentComment: "",
@@ -93,6 +129,7 @@ export default {
       totalLikes,
       showComm: false,
       userInfo: {},
+      newText: this.publication.content,
     };
   },
 };
@@ -111,7 +148,7 @@ export default {
         {{ publication.userNamePost }}
       </div>
       <i
-        v-if="owner"
+        v-if="owner||this.$store.state.user.admin"
         @click="deletePost"
         class="fa-solid fa-xmark icones_actions"
       ></i>
@@ -147,15 +184,37 @@ export default {
       >
         {{ totalLikes }} J'aime
       </p>
-      <div class="user fw-bolder">{{ publication.userNamePost }}</div>
-      <p class="card-text ms-2">
-        {{ publication.content }}
-      </p>
-      <p class="card-text">
-        <small class="text-muted">{{
-          capitalizeFirstLetter(getTimeAgo(publication.date))
-        }}</small>
-      </p>
+      <div class="namePublication">
+        <div class="user fw-bolder">{{ publication.userNamePost }}</div>
+        <div class="newIcon d-flex">
+
+
+
+
+        <p class="card-text ms-2 mt-2" v-if="!modifyText">
+          {{ publication.content }}
+        </p>
+        <i
+          v-if="owner && !modifyText"
+          @click="modifyText = !modifyText"
+          class="fas fa-light fa-pencil"
+        ></i>
+
+        </div>
+        <div v-if="modifyText"  class="d-flex modifyText">
+          <input v-model="newText" type="text" class="newText" />
+          <i @click="saveNewText" class="fas fa-light fa-floppy-disk"></i>
+          <i
+            @click="resetText"
+            class="fas fa-light fa-rectangle-xmark"
+          ></i>
+        </div>
+        <p class="card-text mb-3">
+          <small class="text-muted">{{
+            capitalizeFirstLetter(getTimeAgo(publication.date))
+          }}</small>
+        </p>
+      </div>
       <Comments
         v-for="comment in publication.comments"
         :key="comment.id"
@@ -258,7 +317,10 @@ export default {
   margin-right: 5px;
 }
 
-.fa-xmark:hover {
+.fa-xmark:hover,
+.fa-pencil:hover,
+.fa-floppy-disk:hover,
+.fa-rectangle-xmark:hover {
   transform: scale(1.3);
   color: #fd2d01;
 }
@@ -277,6 +339,52 @@ export default {
   width: 50px;
   height: 45px;
   margin-right: 10px;
+}
+
+.fa-pencil {
+display: none;
+  cursor: pointer;
+ 
+
+}
+
+.newIcon{
+      align-items: center;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+
+.newIcon:hover .fa-pencil {
+  display: block;
+}
+
+.newText {
+  
+  width: 105%;
+  height: 40px;
+  margin: 10px 2px;
+}
+
+input {
+  display: block;
+}
+
+.fa-floppy-disk {
+   position: absolute;
+  right: 9%;
+  cursor: pointer;
+}
+
+.fa-rectangle-xmark {
+  position: absolute;
+  right:5%;
+  
+  cursor: pointer;
+}
+
+.modifyText{
+   align-items: center;
+   
 }
 </style>
  

@@ -137,15 +137,18 @@ function deletePost(req, res) {
 	
 	const requestUserId = req.params.id
 	const publication = req.body
+	console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqq', req.body);
 	
 	let pass = false
+	console.log(requestUserId)
+	console.log(publication.publication.userId)
 
 	User.findOne({ _id: requestUserId }).then((user) => {
-		if (requestUserId === publication.userId) {
-			
+		if (requestUserId === publication.publication.userId) {
 			pass = true
 		} else if (user.admin) {
-		
+					console.log("eres el duadmieno")
+
 			pass = true
 		} else {
 			res.status(403).send({ message: "vous n'êtes pas autorisé à supprimer ce post" })
@@ -165,24 +168,30 @@ function deleteImageLocal(dataResponse) {
 	const imageUrl = dataResponse.imageUrl
 	imageUrl.forEach((image) => {
 		const imageToDelete = image.split('/').at(-1)
-		unlink(`images/${imageToDelete}`)
+		unlink(`images/${imageToDelete}`).catch((error) => {
+			console.log(error);
+		})
 	})
 }
 
 function modifyPost(req, res) {
 	const params = req.params
 	const id = params.id
+	const newText = params.newText
 
-	let addImage = req.file != null
-
-	const payload = makeNewPayload(addImage, req)
-
-	Publication.findByIdAndUpdate(id, payload)
-		.then((dataResponse) => modifyUpdateResponseClient(dataResponse, res))
-		.then((Publication) => {
-			if (addImage) deletePreviousImage(Publication)
-		})
-		.catch((error) => res.status(500).send({ message: error }))
+	Publication.findByIdAndUpdate(
+		id,
+		{ content: newText },
+		{ new: true },
+		function (err, result) {
+			if (err) {
+				res.send(err)
+			} else {
+				console.log(result)
+				res.send(result)
+			}
+		}
+	)
 }
 
 function deletePreviousImage(publication) {

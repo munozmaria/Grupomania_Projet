@@ -59,7 +59,7 @@ app.post(
 )
 
 app.get('/api/post/:id', verifyUser, getOnlyOnePost)
-//app.put("/api/post/:id", verifyUser, uploadFile, modifyPost)
+app.put("/api/post/:id/:newText", verifyUser, modifyPost)
 app.delete('/api/post/:id', verifyUser, deletePost)
 app.post('/api/post/:id/like', verifyUser, likePost)
 
