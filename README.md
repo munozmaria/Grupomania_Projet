@@ -6,10 +6,13 @@ Ce projet est réalisé dans le cadre du parcours **Développeur Web** du site [
 
 ### Technologies utilisées
 * Back
+
     * NodeJS
     * Express
     * MongoDB
+
 * Front
+
     * Vue.js 
     * Bootstrap
 
