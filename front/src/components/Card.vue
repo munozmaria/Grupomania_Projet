@@ -245,7 +245,14 @@ export default {
 </template>
  
 <style scoped>
-@media (max-width: 768px) {
+@media (min-width: 1400px) {
+  .card {
+    max-width: 60% !important;
+    min-width: 60% !important;
+  }
+}
+
+@media (max-width: 992px) {
   .card {
     width: 100% !important;
   }

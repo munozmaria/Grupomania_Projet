@@ -42,20 +42,22 @@ export default {
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
     },
 
-    deleteComment() {
+    async deleteComment() {
       const idUser = this.comment.userId;
       const dateComment = this.comment.date;
 
-      this.$store.dispatch("deleteComment", {
+     await this.$store.dispatch("deleteComment", {
         idUser,
         dateComment,
         publicationId: this.publicationId,
         idComment: this.comment.idComment,
         commentUserId: this.commentUserId,
       });
+      this.findIdComment()
     },
 
     findIdComment() {
+      console.log(this.comment.userId, "este es el find")
       axios
         .post("http://localhost:3000/api/auth/getuserid", {
           id: this.comment.userId,

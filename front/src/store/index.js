@@ -34,8 +34,8 @@ export default createStore({
 			let indexComment = selectedPost.comments.findIndex((comment) => {
 				return comment.idComment == idComment
 			})
+					state.posts[indexPost].comments.splice(indexComment, 1)
 
-			state.posts[indexPost].comments.splice(indexComment, 1)
 		},
 		addComment(state, commentData) {
 			console.log(state, commentData)
@@ -153,26 +153,18 @@ export default createStore({
 				},
 			}
 
-			context.commit("updateComments", { publicationId, idComment })
-
-			/*
-		
-			let indexComment = this.state.posts[indexPost].comments.findIndex(
-				(comment) => {
-					return comment.date == dateComment && comment.userId == idUser
-				}
-			)
-			*/
+			
 			axios
-				.delete(
-					`http://localhost:3000/api/post/${publicationId}/comment/${idComment}/date/${dateComment}/userId/${this.state.user._id}/commentUserId/${commentUserId}`,
-					config
+			.delete(
+				`http://localhost:3000/api/post/${publicationId}/comment/${idComment}/date/${dateComment}/userId/${this.state.user._id}/commentUserId/${commentUserId}`,
+				config
 				)
 				.then((res) => console.log(res.data))
 				.catch(() => {
 					alert("vous n'êtes pas autorisé à supprimer ce commentaire")
 					window.location.reload()
 				})
+				context.commit("updateComments", { publicationId, idComment })
 		},
 
 		async getUser(state) {
