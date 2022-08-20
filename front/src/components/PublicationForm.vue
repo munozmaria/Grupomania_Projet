@@ -154,8 +154,10 @@ input {
 }
 
 .fa-images {
-  color: #fd2d01;
+  color: #300a02;
 }
+
+
 
 .image-comments img {
   width: 150px;
@@ -172,12 +174,8 @@ input {
 }
 
 .buttonOption .btn:hover {
-  background: rgb(253, 1, 1);
-  background: linear-gradient(
-    207deg,
-    rgba(253, 1, 1, 1) 3%,
-    rgba(255, 215, 215, 1) 61%
-  );
+  background: rgb(247, 114, 136);;
   border: transparent !important;
+  color:black;
 }
 </style>

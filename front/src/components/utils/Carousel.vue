@@ -74,13 +74,13 @@ export default {
 }
 
 .carousel-indicators button {
-  border: 1px solid red !important;
+  border: 1px solid rgb(241, 165, 165) !important;
   border-radius: 5px !important;
   height: 10px !important;
   width: 10px !important;
 }
 
 .carousel-indicators button.active {
-  background-color: red !important;
+  background-color:  rgb(176, 7, 35);
 }
 </style>

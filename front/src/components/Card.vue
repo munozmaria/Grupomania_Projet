@@ -201,8 +201,9 @@ export default {
         ></i>
 
         </div>
-        <div v-if="modifyText"  class="d-flex modifyText">
-          <input v-model="newText" type="text" class="newText" />
+        <div v-if="modifyText"  class="d-flex modifyText  ">
+
+          <input v-model="newText" type="text" class="newText ps-3" />
           <i @click="saveNewText" class="fas fa-light fa-floppy-disk"></i>
           <i
             @click="resetText"
@@ -250,13 +251,36 @@ export default {
     max-width: 60% !important;
     min-width: 60% !important;
   }
+  
+
+  
 }
 
 @media (max-width: 992px) {
   .card {
     width: 100% !important;
   }
+  
+
+
+
+
 }
+
+@media (max-width: 768px){
+.fa-floppy-disk {
+  
+  right:13% !important;
+
+
+}
+.fa-rectangle-xmark{
+  right:6% !important;
+  margin-right: 5px;
+
+}
+}
+
 .card-body {
   padding: 2rem 1rem !important;
 }
@@ -369,7 +393,14 @@ display: none;
   
   width: 105%;
   height: 40px;
-  margin: 10px 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border:1px solid #f1c5db;
+  border-radius: 15px;
+}
+
+.newText:focus{
+  outline: 1px solid #f1c5db;
 }
 
 input {
@@ -378,19 +409,21 @@ input {
 
 .fa-floppy-disk {
    position: absolute;
-  right: 9%;
+  right: 8%;
   cursor: pointer;
+  color: rgb(176, 7, 35);
 }
 
 .fa-rectangle-xmark {
   position: absolute;
   right:5%;
-  
+  color: rgb(176, 7, 35);
   cursor: pointer;
 }
 
 .modifyText{
    align-items: center;
+     margin: 10px 2px;
    
 }
 </style>
