@@ -136,7 +136,7 @@
 }
 
 .avatarcito {
-  position: absolute;
+
   right: 11rem;
   margin-top: 5px;
   margin-left: 5px;
