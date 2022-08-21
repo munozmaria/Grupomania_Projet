@@ -137,17 +137,17 @@ function deletePost(req, res) {
 	
 	const requestUserId = req.params.id
 	const publication = req.body
-	console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqq', req.body);
+	
 	
 	let pass = false
-	console.log(requestUserId)
-	console.log(publication.publication.userId)
+	
+	
 
 	User.findOne({ _id: requestUserId }).then((user) => {
 		if (requestUserId === publication.publication.userId) {
 			pass = true
 		} else if (user.admin) {
-					console.log("eres el duadmieno")
+				
 
 			pass = true
 		} else {

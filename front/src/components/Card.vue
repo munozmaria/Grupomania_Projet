@@ -96,7 +96,7 @@ export default {
         axios
           .put(`http://localhost:3000/api/post/${this.publication._id}/${this.newText}`, {}, config)
           .then((res) => {
-            console.log("holaaaa", res);
+            console.log( res);
             this.publication.content = res.data.content
             this.modifyText = !this.modifyText
            

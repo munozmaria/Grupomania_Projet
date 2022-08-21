@@ -38,7 +38,7 @@ export default createStore({
 
 		},
 		addComment(state, commentData) {
-			console.log(state, commentData)
+			//console.log(state, commentData)
 
 			state.posts[commentData.index].comments.push({
 				date: commentData.dateNow,
