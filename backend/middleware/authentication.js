@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
-const { User } = require("../mongo")
+const { User } = require("../models/userModel")
+
 
 function verifyUser(req, res, next) {
 	const header = req.headers.authorization

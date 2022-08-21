@@ -1,28 +1,14 @@
-const mongoose = require('mongoose')
-const unlink = require('fs').promises.unlink
+const mongoose = require("mongoose")
+const unlink = require("fs").promises.unlink
 
-const { User } = require('../mongo')
-
-const postSchema = new mongoose.Schema({
-	userId: String,
-	userNamePost: String,
-	content: String,
-	imageUrl: [String],
-	date: Number,
-	likes: Number,
-	usersLiked: [String],
-	comments: [Object],
-})
-
-const Publication = mongoose.model('Publication', postSchema)
-
+const { User } = require("../models/userModel")
+const { Publication } = require("../models/postModel")
 
 
 function getPost(req, res) {
 	let postsConImgs = []
 	Publication.find().then((publications) => {
 		publications.forEach((publication) => {
-			
 			postsConImgs.push(publication)
 		})
 		res.status(200).json(postsConImgs)
@@ -30,14 +16,13 @@ function getPost(req, res) {
 }
 
 function createPosts(req, res) {
-
 	const date = Date.now()
 
 	const { userId, userNamePost, content } = req.body
 
 	const imageUrl = req.files.map((imageFile) => {
 		return (
-			req.protocol + '://' + req.get('host') + '/images/' + imageFile.filename
+			req.protocol + "://" + req.get("host") + "/images/" + imageFile.filename
 		)
 	})
 
@@ -62,13 +47,10 @@ function createPosts(req, res) {
 
 function createComment(req, res) {
 	const postId = req.params.id
-	
 
 	Publication.findById(postId, function (err, post) {
 		if (err) {
-		
 		} else {
-	
 			post.comments.push(req.body)
 
 			post
@@ -88,24 +70,22 @@ function deleteComment(req, res) {
 	const idComment = req.params.idComment
 	const commentUserId = req.params.commentUserId
 	const date = req.params.date
-	
+
 	let pass = false
 
-	
 	User.findOne({ _id: requestUserId })
 		.then((user) => {
-			
 			if (commentUserId == user._id) {
-				
 				pass = true
-				
 			} else if (user.admin) {
 				pass = true
-			
 			} else {
-				res.status(403).send({ message: "vous n'êtes pas autorisé à supprimer ce commentaire" })
+				res
+					.status(403)
+					.send({
+						message: "vous n'êtes pas autorisé à supprimer ce commentaire",
+					})
 			}
-			
 
 			if (pass === true) {
 				Publication.findByIdAndUpdate(publicationId, {
@@ -113,7 +93,7 @@ function deleteComment(req, res) {
 				})
 
 					.then(() => {
-						res.status(201).send({ message: 'tout ok' })
+						res.status(201).send({ message: "tout ok" })
 						return
 					})
 					.catch((error) => res.status(500).send(error))
@@ -134,32 +114,26 @@ function getOnlyOnePost(req, res) {
 }
 
 function deletePost(req, res) {
-	
 	const requestUserId = req.params.id
 	const publication = req.body
-	
-	
+
 	let pass = false
-	
-	
 
 	User.findOne({ _id: requestUserId }).then((user) => {
 		if (requestUserId === publication.publication.userId) {
 			pass = true
 		} else if (user.admin) {
-				
-
 			pass = true
 		} else {
-			res.status(403).send({ message: "vous n'êtes pas autorisé à supprimer ce post" })
+			res
+				.status(403)
+				.send({ message: "vous n'êtes pas autorisé à supprimer ce post" })
 		}
 		if (pass) {
 			Publication.findByIdAndDelete(req.body.publication._id)
 				.then((publication) => deleteImageLocal(publication))
 
-				.catch((error) =>
-					res.status(500).send({ message: ' erreur' })
-				)
+				.catch((error) => res.status(500).send({ message: " erreur" }))
 		}
 	})
 }
@@ -167,9 +141,9 @@ function deletePost(req, res) {
 function deleteImageLocal(dataResponse) {
 	const imageUrl = dataResponse.imageUrl
 	imageUrl.forEach((image) => {
-		const imageToDelete = image.split('/').at(-1)
+		const imageToDelete = image.split("/").at(-1)
 		unlink(`images/${imageToDelete}`).catch((error) => {
-			console.log(error);
+			console.log(error)
 		})
 	})
 }
@@ -195,10 +169,10 @@ function modifyPost(req, res) {
 }
 
 function deletePreviousImage(publication) {
-	if (publication == null || publication.imageUrl == '') {
+	if (publication == null || publication.imageUrl == "") {
 		return
 	} else {
-		const imageDelete = publication.imageUrl.split('/').at(-1)
+		const imageDelete = publication.imageUrl.split("/").at(-1)
 		return unlink(`images/${imageDelete}`).then(() => publication)
 	}
 }
@@ -209,14 +183,14 @@ function makeNewPayload(addImage, req) {
 	} else {
 		const payload = JSON.parse(req.body.content)
 		payload.imageUrl =
-			req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
+			req.protocol + "://" + req.get("host") + "/images/" + req.file.filename
 		return payload
 	}
 }
 
 function modifyUpdateResponseClient(dataResponse, res) {
 	if (dataResponse == null) {
-		res.status(404).send({ message: 'Objet not found in database' })
+		res.status(404).send({ message: "Objet not found in database" })
 	} else {
 		return Promise.resolve(res.status(200).send(dataResponse)).then(
 			() => dataResponse
@@ -225,12 +199,10 @@ function modifyUpdateResponseClient(dataResponse, res) {
 }
 
 function imageUpdateProfil(req, res) {
-	
-
 	const userId = req.body.userId
 
 	const imageUrl =
-		req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
+		req.protocol + "://" + req.get("host") + "/images/" + req.file.filename
 
 	User.findByIdAndUpdate(userId, { picture: imageUrl }, function (err, result) {
 		if (err) {
@@ -243,7 +215,6 @@ function imageUpdateProfil(req, res) {
 
 function likePost(req, res) {
 	const { like, userId } = req.body
-	
 
 	getOnePost(req, res)
 		.then((publication) => updateLike(publication, like, userId, res))
@@ -253,8 +224,6 @@ function likePost(req, res) {
 }
 
 function updateLike(publication, like, userId, res) {
-	
-
 	if (like && !publication.usersLiked.includes(userId)) {
 		publication.usersLiked.push(userId)
 	} else if (!like) {
