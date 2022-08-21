@@ -191,11 +191,11 @@ export default {
 
 
 
-        <p class="card-text ms-2 mt-2" v-if="!modifyText">
+        <p class="card-text ms-2 mt-2 mb-3" v-if="!modifyText">
           {{ publication.content }}
         </p>
         <i
-          v-if="owner && !modifyText"
+          v-if="owner || this.$store.state.user.admin && !modifyText"
           @click="modifyText = !modifyText"
           class="fas fa-light fa-pencil"
         ></i>

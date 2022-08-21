@@ -74,7 +74,7 @@ export default {
 }
 
 .carousel-indicators button {
-  border: 1px solid rgb(241, 165, 165) !important;
+  border: 2px solid rgb(241, 165, 165) !important;
   border-radius: 5px !important;
   height: 10px !important;
   width: 10px !important;
