@@ -26,8 +26,7 @@
               Authorization: `Bearer ${token}`
             }
           }
-          //https://masteringjs.io/tutorials/axios/post-headers
-          //axios post the first parameter is the URL, the 2nd parameter is the request body, and the 3rd parameter is the options
+         
           axios.post('http://localhost:3000/api/auth/getuser', {}, config)
             .then(res => {
               console.log(res.status)
