@@ -35,7 +35,7 @@ router.post(
 )
 
 router.get("/api/post/:id", verifyUser, getOnlyOnePost)
-router.put("/api/post/:id/:newText/:userId/:userId", verifyUser, modifyPost)
+router.put("/api/post/:id/:publicationUserId/:newText/:userId/:userId", verifyUser, modifyPost)
 router.delete("/api/post/:id", verifyUser, deletePost)
 router.post("/api/post/:id/like", verifyUser, likePost)
 

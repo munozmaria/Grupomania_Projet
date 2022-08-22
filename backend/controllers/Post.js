@@ -150,14 +150,17 @@ function deleteImageLocal(dataResponse) {
 
 function modifyPost(req, res) {
 	const params = req.params
-	const publicationId = req.params.id
+	const publicationUserId = params.publicationUserId
+	const id = req.params.id
 	const requestUserId = params.userId
 	const newText = params.newText
 
 	let pass = false
 
 	User.findOne({ _id: requestUserId }).then((user) => {
-		if (user._id === requestUserId) {
+		console.log(requestUserId)
+		console.log(user._id)
+		if (user._id == publicationUserId) {
 			pass = true
 		} else if (user.admin) {
 			pass = true
