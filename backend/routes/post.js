@@ -27,7 +27,7 @@ router.delete(
 	deleteComment
 )
 
-app.post(
+router.post(
 	"/api/post/file/profileImage",
 	verifyUser,
 	upload.single("image"),
