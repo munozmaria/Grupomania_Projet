@@ -94,7 +94,7 @@ export default {
         };
 
         axios
-          .put(`http://localhost:3000/api/post/${this.publication._id}/${this.newText}`, {}, config)
+          .put(`http://localhost:3000/api/post/${this.publication._id}/${this.newText}/userId/${this.$store.state.user._id}`, {}, config)
           .then((res) => {
             console.log( res);
             this.publication.content = res.data.content
@@ -102,7 +102,8 @@ export default {
            
           })
           .catch((err) => {
-            console.log("err:", err);
+          alert("vous n'êtes pas autorisé à modifier ce post")
+					window.location.reload()
           });
       }
     },

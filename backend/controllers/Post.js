@@ -150,24 +150,42 @@ function deleteImageLocal(dataResponse) {
 
 function modifyPost(req, res) {
 	const params = req.params
-	const id = params.id
+	const publicationId = req.params.id
+	const requestUserId = params.userId
 	const newText = params.newText
 
-	Publication.findByIdAndUpdate(
-		id,
-		{ content: newText },
-		{ new: true },
-		function (err, result) {
-			if (err) {
-				res.send(err)
-			} else {
-				console.log(result)
-				res.send(result)
-			}
-		}
-	)
-}
+	let pass = false
 
+	User.findOne({ _id: requestUserId }).then((user) => {
+		if (user._id === requestUserId) {
+			pass = true
+		} else if (user.admin) {
+			pass = true
+		} else {
+			res
+				.status(403)
+				.send({ message: "vous n'êtes pas autorisé à modifier ce post" })
+		}
+
+		if (pass) {
+			Publication.findByIdAndUpdate(
+				id,
+				{ content: newText },
+				{ new: true },
+				function (err, result) {
+					if (err) {
+						res.send(err)
+					} else {
+						console.log(result)
+						res.send(result)
+					}
+				}
+			)
+		}
+	})
+}
+		
+		
 function deletePreviousImage(publication) {
 	if (publication == null || publication.imageUrl == "") {
 		return
@@ -234,6 +252,12 @@ function updateLike(publication, like, userId, res) {
 	publication.likes = publication.usersLiked.length
 	return publication
 }
+
+
+
+
+
+
 
 module.exports = {
 	getPost,
