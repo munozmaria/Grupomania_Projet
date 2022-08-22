@@ -16,6 +16,7 @@ const {
 	imageUpdateProfil,
 	modifyPost,
 	likePost,
+	modifyPicture,
 } = require("../controllers/post")
 
 router.get("/api/post", verifyUser, getPost)
@@ -35,8 +36,9 @@ router.post(
 )
 
 router.get("/api/post/:id", verifyUser, getOnlyOnePost)
-router.put("/api/post/:id/:publicationUserId/:newText/:userId/:userId", verifyUser, modifyPost)
+router.put("/api/post/:id/:publicationUserId/:newText/userId/:userId", verifyUser, modifyPost)
 router.delete("/api/post/:id", verifyUser, deletePost)
 router.post("/api/post/:id/like", verifyUser, likePost)
+router.put("/api/post/:publicationId/:userId/:curretUser", verifyUser, upload.array("fileItems"), modifyPicture)
 
 module.exports = router

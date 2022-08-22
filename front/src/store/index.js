@@ -48,6 +48,14 @@ export default createStore({
 				userPic: commentData.userPic,
 			})
 		},
+
+		modifyPicture(state,  postData ) {
+			let index = state.posts.findIndex((post) => {
+				return post._id == postData._id
+			})
+			state.posts[index] = postData
+		},
+
 		logOut(state, user) {
 			state.user = user
 			localStorage.clear()
@@ -196,6 +204,10 @@ export default createStore({
 				},
 			}
 			axios.post(`http://localhost:3000/api/post/`, imageUpload, config)
+		},
+		modifyPicture(context, postData) {
+			
+			context.commit("modifyPicture", postData)
 		},
 	},
 

@@ -188,7 +188,54 @@ function modifyPost(req, res) {
 	})
 }
 		
+
+function modifyPicture(req, res) {
+	console.log(req.params)
+	const { publicationId, userId, curretUser } = req.params
+
+	pass= false
+	
+	User.findOne({ _id: curretUser }).then((user) => {
+		const imageUrl = req.files.map((imageFile) => {
+			return (
+				req.protocol + "://" + req.get("host") + "/images/" + imageFile.filename
+			)
+		})
+
 		
+		if (user._id == userId) {
+			pass = true
+		} else if (user.admin) {
+			pass = true
+		} else {
+			 deleteImageLocal({ imageUrl})
+			res
+				.status(403)
+				.send({ message: "vous n'êtes pas autorisé à modifier cette image post" })
+		}
+
+		if (pass) {
+			
+
+			Publication.findByIdAndUpdate(
+				
+				publicationId,
+				{ imageUrl },
+				{ new: true },
+				function (err, result) {
+					if (err) {
+						res.send(err)
+					} else {
+						console.log(result)
+						res.send(result)
+					}
+				}
+			)
+		}
+	})
+}
+
+
 function deletePreviousImage(publication) {
 	if (publication == null || publication.imageUrl == "") {
 		return
@@ -272,4 +319,5 @@ module.exports = {
 	imageUpdateProfil,
 	modifyPost,
 	likePost,
+	modifyPicture,
 }

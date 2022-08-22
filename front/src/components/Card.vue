@@ -110,6 +110,44 @@ export default {
     resetText(){
       this.newText = this.publication.content
       this.modifyText = !this.modifyText
+    },
+    modifyPictures(e){
+      
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        };
+  
+
+        let formData = new FormData();
+
+ 
+        formData.append("userId", userId);
+
+
+      this.selectedImage = e.target.files;
+      if (this.selectedImage){
+        for (let i = 0; i < this.selectedImage.length; i++) {
+            formData.append("fileItems", this.selectedImage[i]);
+          }
+      }
+
+       axios
+          .put(`http://localhost:3000/api/post/${this.publication._id}/${this.publication.userId}/${this.$store.state.user._id}`, formData, config)
+          .then((res) => {
+           
+            this.$store.dispatch("modifyPicture", res.data);
+         
+            //this.selectedImage = null;
+          })
+             .catch((err) => {
+          alert("vous n'êtes pas autorisé à modifier l'image de ce post")
+					window.location.reload()
+          });
     }
   },
 
@@ -131,6 +169,7 @@ export default {
       showComm: false,
       userInfo: {},
       newText: this.publication.content,
+      selectedImage: null,
     };
   },
 };
@@ -195,12 +234,19 @@ export default {
         <p class="card-text ms-2 mt-2 mb-3" v-if="!modifyText">
           {{ publication.content }}
         </p>
+        <div class="d-flex">
+          <input type="file" ref="file" style="display: none" @change="modifyPictures" multiple>
+        <i class="fas fa-solid fa-image me-3"
+          v-if="owner || this.$store.state.user.admin"
+          @click="$refs.file.click()">
+          </i>
         <i
           v-if="owner || this.$store.state.user.admin && !modifyText"
           @click="modifyText = !modifyText"
           class="fas fa-light fa-pencil"
         ></i>
 
+        </div>
         </div>
         <div v-if="modifyText"  class="d-flex modifyText  ">
 
@@ -351,6 +397,7 @@ export default {
 
 .fa-xmark:hover,
 .fa-pencil:hover,
+.fa-image:hover,
 .fa-floppy-disk:hover,
 .fa-rectangle-xmark:hover {
   transform: scale(1.3);
@@ -373,7 +420,8 @@ export default {
   margin-right: 10px;
 }
 
-.fa-pencil {
+.fa-pencil,
+.fa-image {
 display: none;
   cursor: pointer;
  
@@ -386,7 +434,8 @@ display: none;
     margin-right: 10px;
 }
 
-.newIcon:hover .fa-pencil {
+.newIcon:hover .fa-pencil,
+.newIcon:hover .fa-image {
   display: block;
 }
 
