@@ -335,7 +335,7 @@ export default {
   border: none;
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
   border-radius: 1rem;
-  width: 80%;
+  width: 50%;
 }
 
 .card-header {
@@ -418,6 +418,7 @@ export default {
   width: 50px;
   height: 45px;
   margin-right: 10px;
+  object-fit: cover;
 }
 
 .fa-pencil,
