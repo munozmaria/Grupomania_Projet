@@ -23,11 +23,11 @@ async function createUser(req, res) {
 			admin: false,
 		}).save()
 
-		res.status(201).send({ message: "You are registered 💯 " })
+		res.status(201).send({ message: "You are registered 💯   " })
 	} catch (err) {
 		res
 			.status(409)
-			.send({ message: "This email is already registered 😲 :" + err })
+			.send({ message: "This email is already registered 😲 👍  :" + err })
 	}
 }
 
