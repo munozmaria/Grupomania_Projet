@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 	res.send(`Lstening on port 3000 💯`)
 })
 app.use("/images", express.static(path.join(__dirname, "images")))
+app.use("../../dist/", express.static(path.join(__dirname, "dist")))
 
 app.listen(process.env.PORT || 3000, () => console.log("serveur working 👍"))
 
